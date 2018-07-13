@@ -35,6 +35,15 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
+		<dependency>
+		    <groupId>com.alibaba</groupId>
+		    <artifactId>fastjson</artifactId>
+		    <version>1.2.46</version>
+		</dependency>
+		
+		
 	</dependencies>
 
 	<build>
@@ -43,7 +52,37 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			
+			<plugin>  
+	            <artifactId>maven-compiler-plugin</artifactId>  
+	            <configuration>  
+	                <source>1.8</source>  
+	                <target>1.8</target>  
+	                <encoding>UTF-8</encoding>  
+	                <compilerArguments>  
+	                    <!-- 打包本地jar包 -->
+	                    <extdirs>${project.basedir}/lib</extdirs>  
+	                </compilerArguments>  
+	            </configuration>  
+	        </plugin>  
+        
 		</plugins>
+		
+		<!-- 打包所有jar包 -->
+	    <resources>  
+	        <resource>  
+	            <directory>lib</directory>  
+	            <targetPath>BOOT-INF/lib/</targetPath>  
+	            <includes>  
+	                <include>**/*.jar</include>  
+	            </includes>  
+	        </resource>  
+	
+	    <!-- <resource>
+	        <directory>src/main/resources</directory>
+	        <targetPath>BOOT-INF/classes/</targetPath>
+	    </resource> -->
+	    </resources>  
 	</build>
 
 

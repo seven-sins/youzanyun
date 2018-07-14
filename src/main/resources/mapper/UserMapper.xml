@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hiya3d.mapper.UserMapper">
+    <resultMap id="userRM" type="com.hiya3d.po.User">
+        <id property="userId" column="user_id" />
+        <result property="username" column="username" />
+        <result property="password" column="password" />
+        <result property="mobile" column="mobile" />
+        <result property="nickName" column="nick_name" />
+        <result property="birthday" column="birthday" />
+        <result property="status" column="status" />
+        <result property="point" column="point" />
+    </resultMap>
+
+    <select id="find" parameterType="com.hiya3d.po.User" resultMap="userRM">
+        SELECT a.user_id, a.username, a.mobile, a.password, a.nick_name, a.birthday, a.status, a.point
+        FROM sys_user a
+        WHERE 1=1
+        <if test="username != null">
+        	and a.username = #{username}
+        </if>
+        <if test="mobile != null">
+        	and a.mobile = #{mobile}
+        </if>
+    </select>
+    
+    <select id="get" parameterType="string" resultMap="userRM">
+        SELECT a.user_id, a.username, a.mobile, a.password, a.nick_name, a.birthday, a.status, a.point
+        FROM sys_user a
+        WHERE a.user_id = #{userId}
+    </select>
+    
+    <insert id="insert" parameterType="com.hiya3d.po.User" >
+		insert into sys_user
+			(	
+				user_id,
+				username,
+				password,
+				mobile,
+				nick_name,
+				birthday,
+				status,
+				point
+			)
+		values
+			(	
+				#{userId},
+			 	#{username},
+			 	#{password},
+			 	#{mobile},
+			 	#{nickName},
+			 	#{birthday},
+			 	#{status},
+			 	#{point}
+	 	     )
+	</insert>
+	
+	<update id="update" parameterType="com.hiya3d.po.User" >
+		update sys_user
+		<set>
+			<if test="username != null">
+				username = #{username},
+			</if>
+			<if test="password != null">
+				password = #{password},
+			</if>
+			<if test="mobile != null">
+				mobile = #{mobile},
+			</if>
+			<if test="nickName != null">
+				nick_name = #{nickName},
+			</if>
+			<if test="birthday != null">
+				birthday = #{birthday},
+			</if>
+			<if test="status != null">
+				status = #{status},
+			</if>
+			<if test="point != null">
+				point = #{point}
+			</if>
+		</set>
+		where user_id = #{userId}
+	</update>
+	
+	<delete id="deleteById" parameterType="string" >
+		delete from sys_user
+		where user_id = #{userId}
+	</delete>
+	
+	<delete id="delete" parameterType="string" >
+		delete from sys_user
+		where user_id in
+		<foreach collection="array" item="id" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</delete>
+</mapper> 

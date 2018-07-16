@@ -35,7 +35,7 @@ public class YouzanyunController {
 	 * 获取token
 	 * @return
 	 */
-	@GetMapping("/token")
+	@GetMapping("/rest/token")
 	public Object token() {
 		MultiValueMap<String, String> params= new LinkedMultiValueMap<String, String>();
 		params.add("client_id", "8401a89b9e1a49573d");
@@ -52,7 +52,7 @@ public class YouzanyunController {
 	 * 将App 用户 id（open_user_id）传递给有赞，有赞将创建一个对应的用户
 	 * @return
 	 */
-	@GetMapping("/syncUser")
+	@GetMapping("/rest/syncUser")
 	public Object syncUser() {
 		MultiValueMap<String, String> params= new LinkedMultiValueMap<String, String>();
 		params.add("kdt_id", "41087307");
@@ -63,7 +63,7 @@ public class YouzanyunController {
 		params.add("telephone", "18816789926");
 		return restUtil.send("https://uic.youzan.com/sso/open/login", params);
 	}
-	@GetMapping("/syncUser1")
+	@GetMapping("/rest/syncUser1")
 	public Object syncUser1() {
 		MultiValueMap<String, String> params= new LinkedMultiValueMap<String, String>();
 		params.add("kdt_id", "41087307");
@@ -80,7 +80,7 @@ public class YouzanyunController {
 	 * api接口: youzan.crm.customer.points.sync
 	 * @return
 	 */
-	@GetMapping("/syncPoint")
+	@GetMapping("/rest/syncPoint")
 	public Object syncPoint() { // failure
 		@SuppressWarnings("resource")
 		YZClient client = new DefaultYZClient(new Token(YouzanyunUtil.TOKEN)); //new Sign(appKey, appSecret)
@@ -99,7 +99,7 @@ public class YouzanyunController {
 		
 		return result;
 	}
-	@GetMapping("/syncPoint1")
+	@GetMapping("/rest/syncPoint1")
 	public Object syncPoint1() { // failure
 		@SuppressWarnings("resource")
 		YZClient client = new DefaultYZClient(new Token(YouzanyunUtil.TOKEN)); //new Sign(appKey, appSecret)
@@ -124,7 +124,7 @@ public class YouzanyunController {
 	 * api接口: youzan.crm.fans.points.get
 	 * @return
 	 */
-	@GetMapping("/getPoint")
+	@GetMapping("/rest/getPoint")
 	public Object getPoint() {
 		@SuppressWarnings("resource")
 		YZClient client = new DefaultYZClient(new Token(YouzanyunUtil.TOKEN)); //new Sign(appKey, appSecret)
@@ -138,7 +138,7 @@ public class YouzanyunController {
 		
 		return result;
 	}
-	@GetMapping("/getPoint1")
+	@GetMapping("/rest/getPoint1")
 	public Object getPoint1() {
 		@SuppressWarnings("resource")
 		YZClient client = new DefaultYZClient(new Token(YouzanyunUtil.TOKEN)); //new Sign(appKey, appSecret)
@@ -152,7 +152,7 @@ public class YouzanyunController {
 		return result;
 	}
 	
-	@GetMapping("/user/create1")
+	@GetMapping("/rest/user/create1")
 	public Object createUser() {
 		@SuppressWarnings("resource")
 		YZClient client = new DefaultYZClient(new Token(YouzanyunUtil.TOKEN)); //new Sign(appKey, appSecret)

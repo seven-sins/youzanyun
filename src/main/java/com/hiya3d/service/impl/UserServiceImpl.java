@@ -7,6 +7,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.hiya3d.conf.exception.HiyaException;
 import com.hiya3d.mapper.UserMapper;
 import com.hiya3d.po.User;
 import com.hiya3d.service.UserService;
@@ -58,6 +59,19 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void delete(Serializable[] ids) {
 		userMapper.delete(ids);		
+	}
+
+	@Override
+	public void updatePoint(String mobile, Integer amount) {
+		User query = new User();
+		query.setMobile(mobile);
+		List<User> list = this.find(query);
+		if(list == null || list.isEmpty()) {
+			throw new HiyaException(400, "用户不存在");
+		}
+		User user = list.get(0);
+		user.setPoint(user.getPoint() + amount);
+		this.update(user);
 	}
 
 }

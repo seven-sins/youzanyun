@@ -27,7 +27,7 @@ public class ShopController {
 	
 	private static final String TOKEN = "c9fda8a042ab34db8cd735b395ee31f3";
 
-	@GetMapping("/shop/{shopId}")
+	@GetMapping("/rest/shop/{shopId}")
 	public Object shop(@PathVariable("shopId") Long shopId) {
 		YZClient client = new DefaultYZClient(new Token(TOKEN)); //new Sign(appKey, appSecret)
 		YouzanItemGetParams youzanItemGetParams = new YouzanItemGetParams();
@@ -39,7 +39,7 @@ public class ShopController {
 		return result;
 	}
 	
-	@GetMapping("/user/create")
+	@GetMapping("/rest/user/create")
 	public Object createUser() {
 		YZClient client = new DefaultYZClient(new Token(TOKEN)); //new Sign(appKey, appSecret)
 		YouzanScrmCustomerCreateParams youzanScrmCustomerCreateParams = new YouzanScrmCustomerCreateParams();
@@ -52,7 +52,7 @@ public class ShopController {
 		return result;
 	}
 	
-	@GetMapping("/add/point")
+	@GetMapping("/rest/add/point")
 	public Object addPoint() {
 		YZClient client = new DefaultYZClient(new Token(TOKEN)); //new Sign(appKey, appSecret)
 		YouzanCrmCustomerPointsIncreaseParams youzanCrmCustomerPointsIncreaseParams = new YouzanCrmCustomerPointsIncreaseParams();

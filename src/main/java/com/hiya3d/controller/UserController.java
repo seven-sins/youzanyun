@@ -29,7 +29,7 @@ public class UserController extends BaseController {
 	@Autowired
 	UserService userService;
 
-	@PostMapping("/user")
+	@PostMapping("/rest/user")
 	public Response<?> create(@Valid @RequestBody User user) {
 		User query = new User();
 		query.setMobile(user.getMobile());
@@ -42,7 +42,13 @@ public class UserController extends BaseController {
 		return Response.SUCCESS;
 	}
 	
-	@GetMapping("/user/{userId}")
+	@GetMapping("/rest/user-list")
+	public Response<User> list(){
+		List<User> list = userService.find(null);
+		return new Response<User>().list(list);
+	}
+	
+	@GetMapping("/rest/user/{userId}")
 	public Response<User> get(@PathVariable("userId") String userId){
 		User user = userService.get(userId);
 		if(user == null) {
@@ -51,7 +57,7 @@ public class UserController extends BaseController {
 		return new Response<User>().data(user);
 	}
 
-	@PutMapping("/user/{userId}")
+	@PutMapping("/rest/user/{userId}")
 	public Response<?> update(@PathVariable("userId") String userId, @RequestBody User user) {
 		if (userService.get(userId) == null) {
 			throw new HiyaException(400, "用户不存在");
@@ -62,7 +68,7 @@ public class UserController extends BaseController {
 		return Response.SUCCESS;
 	}
 
-	@DeleteMapping("/user/{userId}")
+	@DeleteMapping("/rest/user/{userId}")
 	public Response<?> delete(@PathVariable("userId") String userId) {
 		userService.deleteById(userId);
 

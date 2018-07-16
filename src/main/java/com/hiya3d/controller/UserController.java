@@ -35,7 +35,7 @@ public class UserController extends BaseController {
 		query.setMobile(user.getMobile());
 		List<User> list = userService.find(query);
 		if (list != null && !list.isEmpty()) {
-			throw new HiyaException(400, "手机号已存在");
+			throw new HiyaException("手机号已存在");
 		}
 		userService.insert(user);
 
@@ -52,7 +52,16 @@ public class UserController extends BaseController {
 	public Response<User> get(@PathVariable("userId") String userId){
 		User user = userService.get(userId);
 		if(user == null) {
-			throw new HiyaException(400, "用户不存在");
+			throw new HiyaException("用户未找到");
+		}
+		return new Response<User>().data(user);
+	}
+	
+	@GetMapping("/rest/user/{mobile}/mobile")
+	public Response<User> getByMobile(@PathVariable("mobile") String mobile){
+		User user = userService.getByMobile(mobile);
+		if(user == null) {
+			throw new HiyaException("用户未找到");
 		}
 		return new Response<User>().data(user);
 	}
@@ -60,7 +69,7 @@ public class UserController extends BaseController {
 	@PutMapping("/rest/user/{userId}")
 	public Response<?> update(@PathVariable("userId") String userId, @RequestBody User user) {
 		if (userService.get(userId) == null) {
-			throw new HiyaException(400, "用户不存在");
+			throw new HiyaException("用户不存在");
 		}
 		user.setUserId(userId);
 		userService.update(user);

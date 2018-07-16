@@ -31,6 +31,12 @@
         WHERE a.user_id = #{userId}
     </select>
     
+    <select id="getByMobile" parameterType="string" resultMap="userRM">
+        SELECT a.user_id, a.username, a.mobile, a.password, a.nick_name, a.birthday, a.status, a.point
+        FROM sys_user a
+        WHERE a.mobile = #{mobile}
+    </select>
+    
     <insert id="insert" parameterType="com.hiya3d.po.User" >
 		insert into sys_user
 			(	

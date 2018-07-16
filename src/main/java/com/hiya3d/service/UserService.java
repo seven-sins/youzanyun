@@ -11,4 +11,11 @@ public interface UserService extends BaseService<User>{
 	 * @param amount
 	 */
 	public void updatePoint(String mobile, Integer amount);
+	
+	/**
+	 * 根据mobile获取用户
+	 * @param mobile
+	 * @return
+	 */
+	public User getByMobile(String mobile);
 }

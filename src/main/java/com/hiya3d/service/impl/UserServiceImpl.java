@@ -74,4 +74,9 @@ public class UserServiceImpl implements UserService {
 		this.update(user);
 	}
 
+	@Override
+	public User getByMobile(String mobile) {
+		return userMapper.getByMobile(mobile);
+	}
+
 }

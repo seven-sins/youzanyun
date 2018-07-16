@@ -9,4 +9,10 @@ import com.hiya3d.po.User;
  */
 public interface UserMapper extends BaseMapper<User> {
 
+	/**
+	 * 根据mobile获取用户
+	 * @param mobile
+	 * @return
+	 */
+	public User getByMobile(String mobile);
 }

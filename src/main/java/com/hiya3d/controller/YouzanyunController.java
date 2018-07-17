@@ -4,8 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hiya3d.conf.exception.HiyaException;
+import com.hiya3d.po.User;
+import com.hiya3d.service.UserService;
 import com.hiya3d.utils.RestUtils;
 import com.hiya3d.utils.YouzanyunUtil;
 import com.youzan.open.sdk.client.auth.Token;
@@ -30,6 +34,8 @@ public class YouzanyunController {
 
 	@Autowired
 	RestUtils restUtil;
+	@Autowired
+	UserService userService;
 	
 	/**
 	 * 获取token
@@ -38,9 +44,9 @@ public class YouzanyunController {
 	@GetMapping("/rest/token")
 	public Object token() {
 		MultiValueMap<String, String> params= new LinkedMultiValueMap<String, String>();
-		params.add("client_id", "8401a89b9e1a49573d");
-		params.add("client_secret", "fd88f37dbc7c583d52d4baf3d1625dc5");
-		params.add("kdt_id", "41087307");
+		params.add("client_id", YouzanyunUtil.CLIENT_ID);
+		params.add("client_secret", YouzanyunUtil.CLIENT_SECRET);
+		params.add("kdt_id", "41150775");
 		return restUtil.send("https://uic.youzan.com/sso/open/initToken", params);
 	}
 	
@@ -52,21 +58,29 @@ public class YouzanyunController {
 	 * 将App 用户 id（open_user_id）传递给有赞，有赞将创建一个对应的用户
 	 * @return
 	 */
-	@GetMapping("/rest/syncUser")
-	public Object syncUser() {
+	@GetMapping("/rest/syncUser/{mobile}")
+	public Object syncUser(@PathVariable("mobile") String mobile) {
+		User user = userService.getByMobile(mobile);
+		if(user == null) {
+			throw new HiyaException("用户未找到");
+		}
 		MultiValueMap<String, String> params= new LinkedMultiValueMap<String, String>();
-		params.add("kdt_id", "41087307");
-		params.add("client_id", "8401a89b9e1a49573d");
-		params.add("client_secret", "fd88f37dbc7c583d52d4baf3d1625dc5");
-		params.add("open_user_id", "app_user_id_123");
-		params.add("nick_name", "昵称123");
-		params.add("telephone", "18816789926");
+		params.add("kdt_id", "41150775");
+		params.add("client_id", YouzanyunUtil.CLIENT_ID);
+		params.add("client_secret", YouzanyunUtil.CLIENT_SECRET);
+		params.add("nick_name", user.getNickName());
+		params.add("telephone", user.getMobile());
+		params.add("open_user_id", user.getUserId());
+		System.out.println(user.getNickName());
+		System.out.println(user.getMobile());
+		System.out.println(user.getUserId());
 		return restUtil.send("https://uic.youzan.com/sso/open/login", params);
 	}
+	
 	@GetMapping("/rest/syncUser1")
 	public Object syncUser1() {
 		MultiValueMap<String, String> params= new LinkedMultiValueMap<String, String>();
-		params.add("kdt_id", "41087307");
+		params.add("kdt_id", "41150775");
 		params.add("client_id", "8401a89b9e1a49573d");
 		params.add("client_secret", "fd88f37dbc7c583d52d4baf3d1625dc5");
 		params.add("open_user_id", "app_user_id_1235");

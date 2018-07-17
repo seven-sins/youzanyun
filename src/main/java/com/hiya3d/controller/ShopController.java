@@ -25,7 +25,7 @@ import com.youzan.open.sdk.gen.v3_0_1.model.YouzanCrmCustomerPointsIncreaseParam
 @RestController
 public class ShopController {
 	
-	private static final String TOKEN = "c9fda8a042ab34db8cd735b395ee31f3";
+	private static final String TOKEN = "a988181b9ff630fdaf7af3970652c7f9";
 
 	@GetMapping("/rest/shop/{shopId}")
 	public Object shop(@PathVariable("shopId") Long shopId) {

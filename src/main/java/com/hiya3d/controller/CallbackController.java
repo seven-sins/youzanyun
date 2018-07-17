@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSONObject;
 import com.hiya3d.po.MsgPushEntity;
 import com.hiya3d.service.UserService;
+import com.hiya3d.utils.YouzanyunUtil;
 
 /**
  * 积分变更回调接口
@@ -26,6 +28,7 @@ import com.hiya3d.service.UserService;
 public class CallbackController {
 	private static final Logger LOG = Logger.getLogger(CallbackController.class);
 	private static final int MODE = 1 ; //服务商
+	private static final Pattern PATTERN = Pattern.compile("^" + YouzanyunUtil.SYNC_POINT_DESC);
 	@Autowired
 	UserService userService;
 	
@@ -84,6 +87,14 @@ public class CallbackController {
         if ("POINTS".equals(entity.getType())) {
         	try {
         		JSONObject object = JSONObject.parseObject(msg);
+        		LOG.info("=============msg: ");
+        		LOG.info(object);
+        		String desc = object.getString("description");
+        		if(StringUtils.isNotBlank(desc) && PATTERN.matcher(desc).find()) {
+        			LOG.info("=============系统调用接口同步积分");
+        			return res;
+        		}
+        		
         		int amount = object.getIntValue("amount");
         		String mobile = object.getString("mobile");
         		if(StringUtils.isBlank(mobile)) {

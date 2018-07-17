@@ -8,10 +8,12 @@ public class YouzanyunUtil {
 	/**
 	 * 使用client_id和client_secret获取的token
 	 */
-	public static final String TOKEN = "c9fda8a042ab34db8cd735b395ee31f3";
+	public static final String TOKEN = "a4116bc2fce030818c22c656c23e4815";
 	
-	public static final String CLIENT_ID = "8401a89b9e1a49573d";
+	public static final String CLIENT_ID = "07032f784d2fec0a17";
 	
-	public static final String CLIENT_SECRET = "fd88f37dbc7c583d52d4baf3d1625dc5";
+	public static final String CLIENT_SECRET = "ded218c55328692ab34ea922fa28cf75";
+	
+	public static final String SYNC_POINT_DESC = "sync_point_call";
 	
 }

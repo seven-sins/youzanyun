@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hiya3d.conf.exception.HiyaException;
 import com.hiya3d.po.User;
 import com.hiya3d.service.UserService;
 import com.hiya3d.utils.RestUtils;
@@ -15,12 +14,6 @@ import com.hiya3d.utils.YouzanyunUtil;
 import com.youzan.open.sdk.client.auth.Token;
 import com.youzan.open.sdk.client.core.DefaultYZClient;
 import com.youzan.open.sdk.client.core.YZClient;
-import com.youzan.open.sdk.gen.v3_0_0.api.YouzanCrmCustomerPointsSync;
-import com.youzan.open.sdk.gen.v3_0_0.api.YouzanScrmCustomerCreate;
-import com.youzan.open.sdk.gen.v3_0_0.model.YouzanCrmCustomerPointsSyncParams;
-import com.youzan.open.sdk.gen.v3_0_0.model.YouzanCrmCustomerPointsSyncResult;
-import com.youzan.open.sdk.gen.v3_0_0.model.YouzanScrmCustomerCreateParams;
-import com.youzan.open.sdk.gen.v3_0_0.model.YouzanScrmCustomerCreateResult;
 import com.youzan.open.sdk.gen.v3_0_1.api.YouzanCrmFansPointsGet;
 import com.youzan.open.sdk.gen.v3_0_1.model.YouzanCrmFansPointsGetParams;
 import com.youzan.open.sdk.gen.v3_0_1.model.YouzanCrmFansPointsGetResult;
@@ -31,7 +24,6 @@ import com.youzan.open.sdk.gen.v3_0_1.model.YouzanCrmFansPointsGetResult;
  */
 @RestController
 public class YouzanyunController {
-
 	@Autowired
 	RestUtils restUtil;
 	@Autowired
@@ -43,139 +35,39 @@ public class YouzanyunController {
 	 */
 	@GetMapping("/rest/token")
 	public Object token() {
+		/**
+		 * 	文档地址: https://www.youzanyun.com/docs/guide/3399/3414
+		 * 
+		 *  1、请求方式:
+			Content-Type：application/x-www-form-urlencoded 请求URL：https://open.youzan.com/oauth/token
+			
+			2、请求参数:
+			名称	类型	是否必须	示例值	描述
+			client_id		String	是	Test client	有赞云颁发给开发者的应用ID
+			client_secret	String	是	Testclientsecret	有赞云颁发给开发者的应用secret
+			grant_type		String	是	silent	授与方式（固定为 “silent”）
+			kdt_id			Number	是	123456	授权给该应用的店铺id，
+		 */
 		MultiValueMap<String, String> params= new LinkedMultiValueMap<String, String>();
 		params.add("client_id", YouzanyunUtil.CLIENT_ID);
 		params.add("client_secret", YouzanyunUtil.CLIENT_SECRET);
+		params.add("grant_type", "silent");
 		params.add("kdt_id", "41150775");
-		return restUtil.send("https://uic.youzan.com/sso/open/initToken", params);
+		return restUtil.send("https://open.youzan.com/oauth/token", params);
 	}
 	
-	/**
-	 * 登录接口
-	 * 		测试用户ID: app_user_id_123
-	 * App 用户首次登录有赞时，
-	 * 调用 https://uic.youzan.com/sso/open/login 
-	 * 将App 用户 id（open_user_id）传递给有赞，有赞将创建一个对应的用户
-	 * @return
-	 */
-	@GetMapping("/rest/syncUser/{mobile}")
-	public Object syncUser(@PathVariable("mobile") String mobile) {
+	@GetMapping("/rest/getPoint/{mobile}")
+	public Object getPoint(@PathVariable("mobile") String mobile) {
 		User user = userService.getByMobile(mobile);
-		if(user == null) {
-			throw new HiyaException("用户未找到");
-		}
-		MultiValueMap<String, String> params= new LinkedMultiValueMap<String, String>();
-		params.add("kdt_id", "41150775");
-		params.add("client_id", YouzanyunUtil.CLIENT_ID);
-		params.add("client_secret", YouzanyunUtil.CLIENT_SECRET);
-		params.add("nick_name", user.getNickName());
-		params.add("telephone", user.getMobile());
-		params.add("open_user_id", user.getUserId());
-		System.out.println(user.getNickName());
-		System.out.println(user.getMobile());
-		System.out.println(user.getUserId());
-		return restUtil.send("https://uic.youzan.com/sso/open/login", params);
-	}
-	
-	@GetMapping("/rest/syncUser1")
-	public Object syncUser1() {
-		MultiValueMap<String, String> params= new LinkedMultiValueMap<String, String>();
-		params.add("kdt_id", "41150775");
-		params.add("client_id", "8401a89b9e1a49573d");
-		params.add("client_secret", "fd88f37dbc7c583d52d4baf3d1625dc5");
-		params.add("open_user_id", "app_user_id_1235");
-		params.add("nick_name", "昵称1235");
-		params.add("telephone", "18816789927");
-		return restUtil.send("https://uic.youzan.com/sso/open/login", params);
-	}
-	
-	/**
-	 * 全量同步用户积分
-	 * api接口: youzan.crm.customer.points.sync
-	 * @return
-	 */
-	@GetMapping("/rest/syncPoint")
-	public Object syncPoint() { // failure
-		@SuppressWarnings("resource")
-		YZClient client = new DefaultYZClient(new Token(YouzanyunUtil.TOKEN)); //new Sign(appKey, appSecret)
-		YouzanCrmCustomerPointsSyncParams youzanCrmCustomerPointsSyncParams = new YouzanCrmCustomerPointsSyncParams();
-		youzanCrmCustomerPointsSyncParams.setPoints(6000L);
-		youzanCrmCustomerPointsSyncParams.setReason("同步积分");
-		youzanCrmCustomerPointsSyncParams.setMobile("18816789926");
-		/**
-		 * 此处不能传openUserId， openUserId是app开店用户使用的
-		 */
-		// youzanCrmCustomerPointsSyncParams.setOpenUserId("app_user_id_123");
-
-		YouzanCrmCustomerPointsSync youzanCrmCustomerPointsSync = new YouzanCrmCustomerPointsSync();
-		youzanCrmCustomerPointsSync.setAPIParams(youzanCrmCustomerPointsSyncParams);
-		YouzanCrmCustomerPointsSyncResult result = client.invoke(youzanCrmCustomerPointsSync);
 		
-		return result;
-	}
-	@GetMapping("/rest/syncPoint1")
-	public Object syncPoint1() { // failure
-		@SuppressWarnings("resource")
-		YZClient client = new DefaultYZClient(new Token(YouzanyunUtil.TOKEN)); //new Sign(appKey, appSecret)
-		YouzanCrmCustomerPointsSyncParams youzanCrmCustomerPointsSyncParams = new YouzanCrmCustomerPointsSyncParams();
-		youzanCrmCustomerPointsSyncParams.setPoints(6001L);
-		youzanCrmCustomerPointsSyncParams.setReason("同步积分");
-		youzanCrmCustomerPointsSyncParams.setMobile("18816789927");
-		/**
-		 * 此处不能传openUserId， openUserId是app开店用户使用的
-		 */
-		// youzanCrmCustomerPointsSyncParams.setOpenUserId("app_user_id_123");
-
-		YouzanCrmCustomerPointsSync youzanCrmCustomerPointsSync = new YouzanCrmCustomerPointsSync();
-		youzanCrmCustomerPointsSync.setAPIParams(youzanCrmCustomerPointsSyncParams);
-		YouzanCrmCustomerPointsSyncResult result = client.invoke(youzanCrmCustomerPointsSync);
-		
-		return result;
-	}
-	
-	/**
-	 * 获取用户积分
-	 * api接口: youzan.crm.fans.points.get
-	 * @return
-	 */
-	@GetMapping("/rest/getPoint")
-	public Object getPoint() {
 		@SuppressWarnings("resource")
 		YZClient client = new DefaultYZClient(new Token(YouzanyunUtil.TOKEN)); //new Sign(appKey, appSecret)
 		YouzanCrmFansPointsGetParams youzanCrmFansPointsGetParams = new YouzanCrmFansPointsGetParams();
-		youzanCrmFansPointsGetParams.setMobile("18816789926");
-		// youzanCrmFansPointsGetParams.setOpenUserId("app_user_id_123");
+		youzanCrmFansPointsGetParams.setOpenUserId(user.getUserId());
 
 		YouzanCrmFansPointsGet youzanCrmFansPointsGet = new YouzanCrmFansPointsGet();
 		youzanCrmFansPointsGet.setAPIParams(youzanCrmFansPointsGetParams);
 		YouzanCrmFansPointsGetResult result = client.invoke(youzanCrmFansPointsGet);
-		
-		return result;
-	}
-	@GetMapping("/rest/getPoint1")
-	public Object getPoint1() {
-		@SuppressWarnings("resource")
-		YZClient client = new DefaultYZClient(new Token(YouzanyunUtil.TOKEN)); //new Sign(appKey, appSecret)
-		YouzanCrmFansPointsGetParams youzanCrmFansPointsGetParams = new YouzanCrmFansPointsGetParams();
-		youzanCrmFansPointsGetParams.setMobile("18816789927");
-
-		YouzanCrmFansPointsGet youzanCrmFansPointsGet = new YouzanCrmFansPointsGet();
-		youzanCrmFansPointsGet.setAPIParams(youzanCrmFansPointsGetParams);
-		YouzanCrmFansPointsGetResult result = client.invoke(youzanCrmFansPointsGet);
-		
-		return result;
-	}
-	
-	@GetMapping("/rest/user/create1")
-	public Object createUser() {
-		@SuppressWarnings("resource")
-		YZClient client = new DefaultYZClient(new Token(YouzanyunUtil.TOKEN)); //new Sign(appKey, appSecret)
-		YouzanScrmCustomerCreateParams youzanScrmCustomerCreateParams = new YouzanScrmCustomerCreateParams();
-		youzanScrmCustomerCreateParams.setMobile("18816789927");
-		youzanScrmCustomerCreateParams.setCustomerCreate("{\"name\":\"JJBB1\",\"gender\":1,\"birthday\":\"2017-01-01\",\"remark\":\"OK\",\"contact_address\":{\"area_code\":210224,\"address\":\"猴子1\"}}");
-		YouzanScrmCustomerCreate youzanScrmCustomerCreate = new YouzanScrmCustomerCreate();
-		youzanScrmCustomerCreate.setAPIParams(youzanScrmCustomerCreateParams);
-		YouzanScrmCustomerCreateResult result = client.invoke(youzanScrmCustomerCreate);
 		
 		return result;
 	}

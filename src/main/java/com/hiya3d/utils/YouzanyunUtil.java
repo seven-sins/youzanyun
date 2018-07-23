@@ -8,7 +8,7 @@ public class YouzanyunUtil {
 	/**
 	 * 使用client_id和client_secret获取的token
 	 */
-	public static final String TOKEN = "a4116bc2fce030818c22c656c23e4815";
+	public static final String TOKEN = "b71b4cdd42473c21a1cba7a85f11e53b";
 	
 	public static final String CLIENT_ID = "07032f784d2fec0a17";
 	

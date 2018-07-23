@@ -97,8 +97,9 @@ public class CallbackController {
         		
         		int amount = object.getIntValue("amount");
         		String mobile = object.getString("mobile");
+        		// String userId = object.getString("open_user_id"); 
         		if(StringUtils.isBlank(mobile)) {
-        			LOG.error("=============手机号不能为空");
+        			LOG.error("=============mobile不能为空");
         			return res;
         		}
         		userService.updatePoint(mobile, amount);

@@ -63,13 +63,10 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void updatePoint(String mobile, Integer amount) {
-		User query = new User();
-		query.setMobile(mobile);
-		List<User> list = this.find(query);
-		if(list == null || list.isEmpty()) {
+		User user = userMapper.getByMobile(mobile);
+		if(user == null) {
 			throw new HiyaException(400, "用户不存在");
 		}
-		User user = list.get(0);
 		user.setPoint(user.getPoint() + amount);
 		this.update(user);
 	}
